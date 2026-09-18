@@ -1,11 +1,11 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
-import anthropic
 
-st.set_page_config(page_title="Oracle Sales AI", layout="wide")
+st.set_page_config(page_title="Oracle Sales AI", page_icon="", layout="wide")
 
 TAXA_USD_BRL = 5.0
+HOJE = datetime(2026, 9, 18)
 
 @st.cache_data
 def load_data():
@@ -34,11 +34,68 @@ if 'logged_in' not in st.session_state:
     st.session_state.chat_history = []
     st.session_state.cliente_selecionado = None
 
+def get_action_items():
+    """Calcula ações prioritárias estratégicas"""
+    actions = []
+    hoje = HOJE
+    
+    for idx, row in historico_df.iterrows():
+        if row['status_contrato'] == 'Ativo':
+            expiracao = pd.to_datetime(row['data_renovacao_proxima'])
+            dias_para_vencer = (expiracao - hoje).days
+            
+            if 0 < dias_para_vencer <= 60:
+                priority = 'CRÍTICO' if dias_para_vencer <= 30 else 'ALTO'
+                actions.append({
+                    'cliente': row['cliente_nome'],
+                    'acao': f"Renovar Contrato - {row['produto']}",
+                    'valor': row['valor_usd'],
+                    'dias': dias_para_vencer,
+                    'prioridade': priority,
+                    'tipo': 'renovacao'
+                })
+    
+    for idx, row in vendas_df.iterrows():
+        prob = int(row['probabilidade_fechamento'].rstrip('%'))
+        data_atualizacao = pd.to_datetime(row['data_atualizacao'])
+        dias_sem_atualizacao = (hoje - data_atualizacao).days
+        
+        if prob < 50 or dias_sem_atualizacao > 14:
+            actions.append({
+                'cliente': row['cliente_nome'],
+                'acao': f"Follow-up Urgente - {row['produto_principal'][:35]}",
+                'valor': row['valor_proposta_usd'],
+                'dias': dias_sem_atualizacao,
+                'prioridade': 'ALTO',
+                'tipo': 'followup',
+                'info': f"Etapa: {row['etapa_funil']} | Prob: {row['probabilidade_fechamento']}"
+            })
+    
+    assinatura = vendas_df[vendas_df['etapa_funil'] == 'Assinatura de Contrato']
+    for idx, row in assinatura.iterrows():
+        data_fechamento = pd.to_datetime(row['data_fechamento_esperada'])
+        dias = (data_fechamento - hoje).days
+        
+        if dias >= 0:
+            actions.append({
+                'cliente': row['cliente_nome'],
+                'acao': f"Confirmar Assinatura - {row['produto_principal'][:35]}",
+                'valor': row['valor_proposta_usd'],
+                'dias': dias,
+                'prioridade': 'CRÍTICO',
+                'tipo': 'assinatura'
+            })
+    
+    return sorted(actions, key=lambda x: (
+        {'CRÍTICO': 0, 'ALTO': 1, 'NORMAL': 2}.get(x['prioridade'], 3),
+        x['dias']
+    ))
+
 def login_page():
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.markdown("# Oracle Sales AI")
-        st.markdown("**Sistema Inteligente de Vendas**")
+        st.markdown("**Inteligência para Reuniões Comerciais**")
         st.markdown("---")
 
         vendedor = st.selectbox("Selecione seu nome:",
@@ -50,220 +107,96 @@ def login_page():
             if password == "oracle2024":
                 st.session_state.logged_in = True
                 st.session_state.vendedor = vendedor
-                st.success(f"Bem-vindo, {vendedor}")
+                st.success(f"Bem-vindo, {vendedor}!")
                 st.rerun()
             else:
-                st.error("Senha incorreta")
-
-def get_action_items(agenda_df, vendas_df, clientes_df, historico_df):
-    """Identifica ações estratégicas prioritárias"""
-    hoje = datetime.now()
-    today_str = hoje.strftime('%Y-%m-%d')
-    
-    acoes = []
-    
-    proximo_14d = (hoje + timedelta(days=14)).strftime('%Y-%m-%d')
-    reunioes_proximas = agenda_df[(agenda_df['data'] >= today_str) & (agenda_df['data'] <= proximo_14d)]
-    
-    for idx, reuniao in reunioes_proximas.iterrows():
-        cliente_id = reuniao['cliente_id']
-        cliente_nome = reuniao['cliente_nome']
-        
-        oporcl = vendas_df[vendas_df['cliente_id'] == cliente_id]
-        hist = historico_df[historico_df['cliente_id'] == cliente_id]
-        
-        score = 0
-        motivo = ""
-        acao = ""
-        prioridade = "Normal"
-        
-        assinatura = oporcl[oporcl['etapa_funil'] == 'Assinatura de Contrato']
-        if len(assinatura) > 0:
-            score = 100
-            valor = assinatura.iloc[0]['valor_proposta_usd']
-            motivo = f"Contrato pendente de assinatura - USD {valor:,.0f}"
-            acao = "Confirmar Assinatura"
-            prioridade = "Crítica"
-        
-        elif len(oporcl[oporcl['etapa_funil'] == 'Negociação']) > 0:
-            negociacao = oporcl[oporcl['etapa_funil'] == 'Negociação'].iloc[0]
-            prob = float(negociacao['probabilidade_fechamento'].rstrip('%'))
-            if prob >= 80:
-                score = 90
-                valor = negociacao['valor_proposta_usd']
-                motivo = f"Negociação em estágio avançado ({negociacao['probabilidade_fechamento']}) - USD {valor:,.0f}"
-                acao = "Avançar Negociação"
-                prioridade = "Alta"
-        
-        if len(hist) > 0:
-            contratos_ativos = hist[hist['status_contrato'] == 'Ativo'].sort_values('data_renovacao_proxima')
-            if len(contratos_ativos) > 0:
-                proximo_contrato = contratos_ativos.iloc[0]
-                data_renovacao = datetime.strptime(proximo_contrato['data_renovacao_proxima'], '%Y-%m-%d')
-                dias_para_renovacao = (data_renovacao - hoje).days
-                
-                if 0 <= dias_para_renovacao <= 30:
-                    if score < 80:
-                        score = 80
-                        motivo = f"Contrato {proximo_contrato['produto']} vence em {dias_para_renovacao} dias"
-                        acao = "Iniciar Renovação"
-                        prioridade = "Alta"
-        
-        if reuniao['data'] == today_str:
-            score += 20
-            prioridade = "Crítica"
-        
-        if score > 50:
-            acoes.append({
-                'score': score,
-                'cliente': cliente_nome,
-                'motivo': motivo,
-                'acao': acao,
-                'tipo_reuniao': reuniao['tipo_reuniao'],
-                'data': reuniao['data'],
-                'hora': reuniao['hora_inicio'],
-                'prioridade': prioridade
-            })
-    
-    acoes.sort(key=lambda x: x['score'], reverse=True)
-    return acoes[:8]
-
-def get_deals_em_risco(vendas_df):
-    """Identifica deals em risco"""
-    hoje = datetime.now()
-    riscos = []
-    
-    for idx, venda in vendas_df.iterrows():
-        if venda['etapa_funil'] == 'Assinatura de Contrato':
-            continue
-        
-        score_risco = 0
-        motivos_risco = []
-        
-        prob = float(venda['probabilidade_fechamento'].rstrip('%'))
-        if prob < 50:
-            score_risco += 50
-            motivos_risco.append(f"Baixa probabilidade de fechamento ({venda['probabilidade_fechamento']})")
-        elif prob < 65:
-            score_risco += 25
-            motivos_risco.append(f"Probabilidade moderada ({venda['probabilidade_fechamento']})")
-        
-        data_fech = datetime.strptime(venda['data_fechamento_esperada'], '%Y-%m-%d')
-        dias_falta = (data_fech - hoje).days
-        
-        if dias_falta <= 7 and prob < 70:
-            score_risco += 40
-            motivos_risco.append(f"Fecha em {dias_falta} dias com probabilidade {venda['probabilidade_fechamento']}")
-        
-        if venda['tempo_ciclo_dias'] > 45:
-            score_risco += 20
-            motivos_risco.append(f"Ciclo estendido ({venda['tempo_ciclo_dias']} dias)")
-        
-        data_atu = datetime.strptime(venda['data_atualizacao'], '%Y-%m-%d')
-        dias_sem_atu = (hoje - data_atu).days
-        
-        if dias_sem_atu > 10 and prob < 75:
-            score_risco += 30
-            motivos_risco.append(f"Sem atualização há {dias_sem_atu} dias")
-        
-        if score_risco > 50:
-            riscos.append({
-                'score': score_risco,
-                'cliente': venda['cliente_nome'],
-                'produto': venda['produto_principal'],
-                'valor': venda['valor_proposta_usd'],
-                'etapa': venda['etapa_funil'],
-                'prob': venda['probabilidade_fechamento'],
-                'data_fech': venda['data_fechamento_esperada'],
-                'motivos': motivos_risco
-            })
-    
-    riscos.sort(key=lambda x: x['score'], reverse=True)
-    return riscos[:10]
+                st.error("Senha incorreta!")
 
 def dashboard_page():
     with st.sidebar:
         st.markdown("## Oracle Sales AI")
-        st.write(f"Usuário: {st.session_state.vendedor}")
+        st.write(f"Vendedor: {st.session_state.vendedor}")
         if st.button("Sair"):
             st.session_state.logged_in = False
             st.session_state.chat_history = []
             st.rerun()
 
     st.markdown("# Oracle Sales AI Assistant")
-    st.markdown(f"**Vendedor:** {st.session_state.vendedor} | **Data:** {datetime.now().strftime('%d/%m/%Y')}")
+    st.markdown(f"**Vendedor:** {st.session_state.vendedor} | **Data:** {HOJE.strftime('%d/%m/%Y')}")
 
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(["Agenda", "Cliente", "Chat", "Briefing", "Farol"])
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["Agenda", "Cliente", "Chat", "Briefing", "Negociações"])
 
     with tab1:
         st.markdown("## Agenda Estratégica")
         
         st.markdown("### Ações Prioritárias")
         
-        acoes = get_action_items(agenda_df, vendas_df, clientes_df, historico_df)
+        actions = get_action_items()
         
-        if len(acoes) > 0:
-            for acao in acoes:
-                col1, col2, col3, col4 = st.columns([2, 1.5, 1.5, 1])
+        if len(actions) > 0:
+            for action in actions[:10]:
+                col1, col2, col3, col4 = st.columns([2, 3, 1, 1])
                 
                 with col1:
-                    st.markdown(f"**{acao['cliente']}**")
-                    st.caption(f"{acao['motivo']}")
-                    st.caption(f"{acao['tipo_reuniao']} - {acao['data']} às {acao['hora']}")
+                    if action['prioridade'] == 'CRÍTICO':
+                        st.markdown(f"🔴 **{action['cliente']}**")
+                    elif action['prioridade'] == 'ALTO':
+                        st.markdown(f"🟠 **{action['cliente']}**")
+                    else:
+                        st.markdown(f"🔵 **{action['cliente']}**")
+                    st.caption(f"Prioridade: {action['prioridade']}")
                 
                 with col2:
-                    if acao['prioridade'] == "Crítica":
-                        st.markdown(f"<span style='background-color: #ff4444; color: white; padding: 5px 10px; border-radius: 3px;'>CRÍTICA</span>", unsafe_allow_html=True)
-                    else:
-                        st.markdown(f"<span style='background-color: #ffaa00; color: white; padding: 5px 10px; border-radius: 3px;'>ALTA</span>", unsafe_allow_html=True)
+                    st.markdown(f"{action['acao']}")
+                    if 'info' in action:
+                        st.caption(action['info'])
                 
                 with col3:
-                    st.write(f"Pontuação: {acao['score']}")
+                    if action['valor'] > 0:
+                        st.metric("Valor", f"${action['valor']/1e6:.1f}M")
+                    else:
+                        st.metric("Dias", action['dias'])
                 
                 with col4:
-                    if st.button(acao['acao'], key=f"acao_{acao['cliente']}", use_container_width=True):
-                        st.success(f"{acao['acao']} iniciado para {acao['cliente']}")
+                    if st.button("Agir", key=f"btn_{action['cliente']}_{action['tipo']}", use_container_width=True):
+                        st.success(f"Ação registrada: {action['acao']} para {action['cliente']}")
                 
                 st.divider()
         else:
-            st.info("Nenhuma ação prioritária neste momento")
-        
+            st.info("Nenhuma ação prioritária no momento.")
+
         st.markdown("---")
         
-        st.markdown("### Agenda Completa")
+        st.markdown("### Próximas Reuniões (Próximos 30 dias)")
         
-        today = datetime.now().strftime('%Y-%m-%d')
-        reunioes = agenda_df[agenda_df['data'] >= today].sort_values('data')
-
-        if len(reunioes) > 0:
-            col1, col2 = st.columns(2)
-            with col1:
-                status_filter = st.selectbox("Filtrar por status:",
-                    ["Todos"] + list(reunioes['status'].unique()), key="status_filter")
-            with col2:
-                cliente_filter = st.selectbox("Filtrar por cliente:",
-                    ["Todos"] + list(reunioes['cliente_nome'].unique()), key="cliente_filter")
-
-            filtered = reunioes
-            if status_filter != "Todos":
-                filtered = filtered[filtered['status'] == status_filter]
-            if cliente_filter != "Todos":
-                filtered = filtered[filtered['cliente_nome'] == cliente_filter]
-
-            for idx, row in filtered.iterrows():
-                col1, col2, col3 = st.columns([1, 3, 1])
+        data_inicio = HOJE
+        data_fim = HOJE + timedelta(days=30)
+        
+        reunioes_proximas = agenda_df[
+            (pd.to_datetime(agenda_df['data']) >= data_inicio) & 
+            (pd.to_datetime(agenda_df['data']) <= data_fim)
+        ].sort_values('data')
+        
+        if len(reunioes_proximas) > 0:
+            for idx, row in reunioes_proximas.iterrows():
+                col1, col2, col3, col4 = st.columns([1.5, 3, 1.5, 1])
+                
                 with col1:
-                    st.write(f"**{row['data']}**")
+                    st.markdown(f"**{row['data']}**")
+                    st.caption(row['hora_inicio'])
+                
                 with col2:
-                    status_texto = "Confirmada" if row['status'] == "Confirmada" else "Agendada"
-                    st.markdown(f"**{row['cliente_nome']}** - {row['tipo_reuniao']}")
-                    st.caption(f"{row['produto_foco']} | {row['hora_inicio']} | Status: {status_texto}")
+                    status_badge = "✓" if row['status'] == 'Confirmada' else "○" if row['status'] == 'Agendada' else "?"
+                    st.markdown(f"{status_badge} **{row['cliente_nome']}**")
+                    st.caption(f"{row['tipo_reuniao']} | {row['produto_foco']}")
+                
                 with col3:
-                    if st.button("Lembrete", key=f"lem_{idx}", use_container_width=True):
-                        st.success(f"Lembrete criado")
-                st.divider()
+                    st.metric("Duração", f"{row['duracao_minutos']}min")
+                
+                with col4:
+                    st.caption(row['status'])
         else:
-            st.info("Nenhuma reunião agendada")
+            st.info("Nenhuma reunião agendada para os próximos 30 dias.")
 
     with tab2:
         st.markdown("## Perfil do Cliente")
@@ -274,7 +207,7 @@ def dashboard_page():
 
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("Receita Anual", f"USD {info['receita_anual_usd']/1e6:.1f}M")
+            st.metric("Receita Anual", f"${info['receita_anual_usd']/1e6:.1f}M")
         with col2:
             st.metric("Tamanho", info['tamanho'])
         with col3:
@@ -300,11 +233,12 @@ def dashboard_page():
 
         if len(insights_segmento) > 0:
             for idx, insight in insights_segmento.iterrows():
-                with st.expander(f"{insight['titulo']} ({insight['tipo']}) - Impacto: {insight['impacto']}"):
+                impact_badge = "●" if insight['impacto'] == "Muito Alto" else "○"
+                with st.expander(f"{impact_badge} {insight['titulo']} ({insight['tipo']})"):
                     st.write(insight['descricao'])
-                    st.caption(f"{insight['data']}")
+                    st.caption(f"{insight['data']} | Impacto: {insight['impacto']}")
         else:
-            st.info("Nenhuma notícia específica para este segmento")
+            st.info("Nenhuma notícia específica para este segmento.")
 
         st.markdown("---")
 
@@ -313,30 +247,34 @@ def dashboard_page():
 
         st.markdown("---")
 
-        st.markdown("### Histórico de Compras")
+        st.markdown("### Histórico de Compras com Oracle")
         historico_cliente = historico_df[historico_df['cliente_id'] == info['id']].sort_values('data_contrato', ascending=False)
 
         if len(historico_cliente) > 0:
             for idx, compra in historico_cliente.iterrows():
-                status_texto = "Ativo" if compra['status_contrato'] == "Ativo" else "Expirado"
-                with st.expander(f"{compra['produto']} - USD {compra['valor_usd']:,.0f} ({status_texto})"):
+                status_badge = "●" if compra['status_contrato'] == "Ativo" else "○"
+                with st.expander(f"{status_badge} {compra['produto']} - ${compra['valor_usd']:,.0f} USD"):
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
-                        st.metric("Valor USD", f"USD {compra['valor_usd']:,.0f}")
+                        st.metric("Valor USD", f"${compra['valor_usd']:,.0f}")
                     with col2:
                         st.metric("Valor BRL", f"R$ {compra['valor_usd'] * TAXA_USD_BRL:,.0f}")
                     with col3:
                         st.metric("Duração", f"{compra['duracao_meses']} meses")
                     with col4:
-                        st.metric("Status", status_texto)
+                        st.metric("Status", compra['status_contrato'])
 
                     st.caption(f"Contrato: {compra['data_contrato']}")
                     if compra['status_contrato'] == 'Ativo':
-                        st.caption(f"Próxima renovação: {compra['data_renovacao_proxima']}")
+                        dias_para_vencer = (pd.to_datetime(compra['data_renovacao_proxima']) - HOJE).days
+                        if dias_para_vencer > 0:
+                            st.caption(f"Renovação em: {compra['data_renovacao_proxima']} ({dias_para_vencer} dias)")
+                        else:
+                            st.caption(f"Vencimento: {compra['data_renovacao_proxima']}")
                     else:
                         st.caption(f"Expirado em: {compra['data_renovacao_proxima']}")
         else:
-            st.info("Nenhuma compra anterior registrada")
+            st.info("Nenhuma compra anterior registrada.")
 
     with tab3:
         st.markdown("## Chat Inteligente")
@@ -344,9 +282,9 @@ def dashboard_page():
 
         st.markdown("### Tipos de perguntas:")
         st.markdown("""
-        - Quais são as principais dores?
-        - Qual produto recomendar?
-        - Como este cliente se compara?
+        - "Quais são as principais dores?"
+        - "Qual produto recomendar?"
+        - "Como este cliente se compara?"
         """)
 
         for msg in st.session_state.chat_history:
@@ -376,7 +314,7 @@ def dashboard_page():
             st.markdown("### BRIEFING EXECUTIVO")
             st.write(f"**Cliente:** {cliente_brief}")
             st.write(f"**Produto:** {produto}")
-            st.write(f"**Data:** {datetime.now().strftime('%d/%m/%Y')}")
+            st.write(f"**Data:** {HOJE.strftime('%d/%m/%Y')}")
 
             st.markdown("---")
             st.markdown("### 1. DIAGNÓSTICO")
@@ -404,14 +342,14 @@ def dashboard_page():
             """)
 
     with tab5:
-        st.markdown("## Farol Preditivo de Vendas")
+        st.markdown("## Negociações - Pipeline de Vendas")
 
         if st.session_state.cliente_selecionado:
             st.info(f"Mostrando dados do cliente selecionado: **{st.session_state.cliente_selecionado}**")
             cliente_info_farol = clientes_df[clientes_df['nome'] == st.session_state.cliente_selecionado].iloc[0]
             vendas_farol = vendas_df[vendas_df['cliente_id'] == cliente_info_farol['id']]
         else:
-            st.warning("Selecione um cliente na aba 'Cliente' para ver o Farol específico")
+            st.warning("Selecione um cliente na aba 'Cliente' para ver dados específicos")
             vendas_farol = vendas_df
 
         vendas_abertas = vendas_farol[vendas_farol['etapa_funil'] != 'Assinatura de Contrato']
@@ -421,7 +359,7 @@ def dashboard_page():
             st.metric("Oportunidades Abertas", len(vendas_abertas))
         with col2:
             pipeline_usd = vendas_abertas['valor_proposta_usd'].sum()
-            st.metric("Pipeline (USD)", f"USD {pipeline_usd/1e6:.2f}M")
+            st.metric("Pipeline (USD)", f"${pipeline_usd/1e6:.2f}M")
         with col3:
             pipeline_brl = pipeline_usd * TAXA_USD_BRL
             st.metric("Pipeline (BRL)", f"R$ {pipeline_brl/1e6:.2f}M")
@@ -431,43 +369,15 @@ def dashboard_page():
                 st.metric("Prob. Fechamento Média", f"{prob:.0f}%")
 
         st.markdown("---")
-        
-        st.markdown("### Deals em Risco")
-        
-        deals_risco = get_deals_em_risco(vendas_df)
-        
-        if len(deals_risco) > 0:
-            for deal in deals_risco:
-                col1, col2, col3 = st.columns([2, 1, 1])
-                
-                with col1:
-                    st.markdown(f"**{deal['cliente']} - {deal['produto']}**")
-                    st.caption(f"Etapa: {deal['etapa']} | Probabilidade: {deal['prob']}")
-                    st.caption(f"Valor: USD {deal['valor']:,.0f}")
-                    for motivo in deal['motivos']:
-                        st.caption(f"• {motivo}")
-                
-                with col2:
-                    st.markdown(f"<span style='background-color: #ff6666; color: white; padding: 5px; border-radius: 3px; display: block; text-align: center;'>RISCO {deal['score']}</span>", unsafe_allow_html=True)
-                
-                with col3:
-                    if st.button("Agir", key=f"risco_{deal['cliente']}", use_container_width=True):
-                        st.success(f"Ação iniciada para {deal['cliente']}")
-                
-                st.divider()
-        else:
-            st.success("Nenhum deal em risco crítico no momento")
-        
-        st.markdown("---")
         st.markdown("### Oportunidades por Etapa do Funil")
 
         st.markdown("""
-        **Etapas do Funil:**
-        - Qualificação: Validação inicial da oportunidade
+        **Etapas:**
+        - Qualificação: Validação inicial
         - Demonstração: Apresentação técnica
-        - Proposta: Proposta comercial apresentada
-        - Negociação: Discussão de termos
-        - Assinatura de Contrato: Contrato assinado
+        - Proposta: Proposta comercial
+        - Negociação: Discussão comercial
+        - Assinatura de Contrato: Deal fechado
         """)
 
         if len(vendas_abertas) > 0:
@@ -477,13 +387,13 @@ def dashboard_page():
             }).reset_index()
             etapas.columns = ['Etapa', 'Valor (USD)', 'Quantidade']
             etapas['Valor (BRL)'] = etapas['Valor (USD)'] * TAXA_USD_BRL
-            etapas['Valor (USD)'] = etapas['Valor (USD)'].apply(lambda x: f"USD {x/1e3:.0f}K")
+            etapas['Valor (USD)'] = etapas['Valor (USD)'].apply(lambda x: f"${x/1e3:.0f}K")
             etapas['Valor (BRL)'] = etapas['Valor (BRL)'].apply(lambda x: f"R$ {x/1e3:.0f}K")
 
             st.dataframe(etapas[['Etapa', 'Quantidade', 'Valor (USD)', 'Valor (BRL)']], use_container_width=True)
 
         st.markdown("---")
-        st.markdown("### Oportunidades com Datas de Fechamento")
+        st.markdown("### Oportunidades com Datas de Fechamento Esperadas")
 
         if len(vendas_abertas) > 0:
             for idx, oport in vendas_abertas.iterrows():
@@ -492,13 +402,13 @@ def dashboard_page():
                     st.write(f"**{oport['produto_principal']}**")
                     st.caption(f"Etapa: {oport['etapa_funil']} | Prob: {oport['probabilidade_fechamento']}")
                 with col2:
-                    st.metric("USD", f"USD {oport['valor_proposta_usd']/1e3:.0f}K")
+                    st.metric("USD", f"${oport['valor_proposta_usd']/1e3:.0f}K")
                 with col3:
                     st.metric("BRL", f"R$ {oport['valor_proposta_usd'] * TAXA_USD_BRL/1e3:.0f}K")
                 with col4:
                     st.metric("Fechamento", oport['data_fechamento_esperada'])
         else:
-            st.success("Nenhuma oportunidade aberta no momento")
+            st.success("Nenhuma oportunidade aberta no momento!")
 
 def main():
     if not st.session_state.logged_in:
