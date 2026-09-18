@@ -1,0 +1,19 @@
+segmento,tipo,titulo,descricao,data,impacto
+Tecnologia,Tendencia de Mercado,Cloud-first strategy dominance em 2026,Empresas estao priorizando cloud-first architecture como estrategia principal,2026-09-10,Muito Alto
+Tecnologia,Noticia Concorrente,AWS expande servicos de IA,AWS lanca novos servicos de IA que competem diretamente com Oracle Cloud,2026-09-12,Alto
+Tecnologia,Oportunidade,Investimento em modernizacao de datacenter,Oportunidade para vender servicos de modernizacao de infraestrutura legada,2026-09-08,Alto
+Tecnologia,Regulacao,GDPR compliance obrigatorio para dados de clientes,Clientes precisam garantir compliance com regulacoes de privacidade de dados,2026-09-05,Muito Alto
+Tecnologia,Noticia de Mercado,Oracle investe em IA e Machine Learning,Oracle investe US$20B em IA e machine learning nos proximos 5 anos,2026-09-01,Muito Alto
+Financas,Tendencia de Mercado,Fintech disrupcao no setor bancario,Crescimento de startups fintech criando pressao para bancos tradicionais modernizarem,2026-09-15,Muito Alto
+Financas,Noticia de Mercado,Regulacao de criptomoedas em debate,Regulacao de criptomoedas vai exigir mais compliance de instituicoes financeiras,2026-09-12,Alto
+Financas,Oportunidade,Necessidade de API modernization,APIs legadas estao se tornando gargalo em transformacao digital,2026-09-10,Alto
+Financas,Regulacao,PLD 2.0 e compliance regulatorio,Aplicacao mais rigorosa de PLD 2.0 exige sistemas de deteccao de fraude mais sofisticados,2026-09-08,Muito Alto
+Financas,Noticia Concorrente,Stripe expande em America Latina,Stripe expande operacoes no Brasil e America Latina,2026-09-06,Alto
+Consultoria,Tendencia de Mercado,Transformacao digital acelerada,COVID acelerou digitalizacao agora e questao de competitividade,2026-09-14,Muito Alto
+Consultoria,Oportunidade,Demanda por consultoria de IA,CEOs investindo mais em consultoria de IA para estrategia competitiva,2026-09-11,Alto
+Consultoria,Noticia de Mercado,McKinsey abre novos centros de inovacao,McKinsey abre novos centros de inovacao focados em IA e cloud,2026-09-09,Alto
+Consultoria,Regulacao,SOX compliance mais rigorosa,SOX compliance mais rigorosa impacta orcamentos de TI,2026-09-07,Muito Alto
+Consultoria,Noticia Concorrente,Deloitte adquire consultoria de cloud,Deloitte adquire boutique consultoria especializada em cloud migrations,2026-09-04,Alto
+SaaS,Tendencia de Mercado,Subscription model crescimento 45%,SaaS companies crescendo 45% YoY com modelo de subscription,2026-09-16,Alto
+SaaS,Noticia de Mercado,IA generativa integrada nos produtos,IA generativa se tornando diferencial competitivo em produtos SaaS,2026-09-13,Muito Alto
+SaaS,Oportunidade,PLG Product-Led Growth adoption,PLG adoption crescendo reduzindo ciclo de vendas,2026-09-11,Alto
