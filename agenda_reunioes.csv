@@ -1,0 +1,21 @@
+id,data,hora_inicio,hora_fim,cliente_id,cliente_nome,vendedor,tipo_reuniao,duracao_minutos,status,produto_foco,observacoes
+AGE001,2024-09-17,09:00,10:00,C001,TechFlow Solutions,João Silva,Discovery,60,Agendada,Oracle OCI Migration,Validar pains com Technical Lead e CFO
+AGE002,2024-09-17,14:00,15:30,C003,DataHub Innovations,Maria Santos,Demonstração,90,Agendada,Autonomous Database Premium,Apresentar benchmark de performance
+AGE003,2024-09-18,10:00,11:00,C002,Global Finance Systems,Carlos Mendes,Negociação,60,Agendada,Oracle NetSuite Implementation,Revisão de customizações e timeline
+AGE004,2024-09-18,15:00,16:00,C004,Enterprise Solutions Corp,Ana Costa,Follow-up,60,Confirmada,Oracle NetSuite Customization,Retorno da análise técnica
+AGE005,2024-09-19,09:30,10:30,C005,Cloud Architects LLC,João Silva,Proposição,60,Confirmada,OCI Disaster Recovery Setup,Apresentar proposta final e SLA
+AGE006,2024-09-19,13:00,14:00,C006,Digital Transformation Inc,Pedro Oliveira,Qualificação,60,Agendada,Database Performance Tuning,Entender escopo completo e prioridades
+AGE007,2024-09-20,10:00,11:30,C001,TechFlow Solutions,João Silva,Apresentação Técnica,90,Agendada,Oracle Database Optimization,Deep dive em índices e query optimization
+AGE008,2024-09-20,14:30,15:30,C002,Global Finance Systems,Carlos Mendes,Revisão Proposta,60,Pendente,Oracle NetSuite Implementation,Feedback de stakeholders e ajustes
+AGE009,2024-09-23,10:00,11:00,C003,DataHub Innovations,Maria Santos,Negociação,60,Agendada,Oracle OCI Advanced Services,Discussão de termos e condições
+AGE010,2024-09-25,14:00,15:00,C004,Enterprise Solutions Corp,Ana Costa,Assinatura,60,Confirmada,Oracle NetSuite Customization,Assinatura final do contrato
+AGE011,2024-09-27,09:00,10:00,C005,Cloud Architects LLC,João Silva,Follow-up,60,Agendada,OCI Disaster Recovery Setup,Lembrança: assinatura pendente
+AGE012,2024-10-01,10:00,11:30,C001,TechFlow Solutions,João Silva,Kick-off,90,Planejado,Oracle OCI Migration,Início do projeto - mobilizar equipe técnica
+AGE013,2024-10-05,14:00,15:00,C002,Global Finance Systems,Carlos Mendes,Treinamento,60,Planejado,Oracle NetSuite Implementation,Treinamento de power users
+AGE014,2024-10-10,09:00,10:30,C003,DataHub Innovations,Maria Santos,Implementação,90,Planejado,Autonomous Database Premium,Iniciar setup do banco autônomo
+AGE015,2024-10-15,13:00,14:00,C006,Digital Transformation Inc,Pedro Oliveira,Follow-up,60,Planejado,Database Performance Tuning,Validar resultados após otimização
+AGE016,2024-10-20,10:00,11:00,C004,Enterprise Solutions Corp,Ana Costa,Suporte,60,Planejado,Oracle NetSuite Customization,Suporte pós-implementação
+AGE017,2024-10-25,14:00,15:30,C005,Cloud Architects LLC,João Silva,Treinamento,90,Planejado,OCI Disaster Recovery Setup,Treinar equipe em DR procedures
+AGE018,2024-11-05,09:00,10:00,C001,TechFlow Solutions,José Martins,Business Review,60,Planejado,Oracle OCI Migration,Revisão de progresso - 1 mês
+AGE019,2024-11-10,10:00,11:00,C002,Global Finance Systems,Carlos Mendes,Business Review,60,Planejado,Oracle NetSuite Implementation,Checkpoint: alinhamento com objetivos
+AGE020,2024-12-01,14:00,15:00,C003,DataHub Innovations,Maria Santos,Business Review,60,Planejado,Autonomous Database Premium,Avaliação de performance e ROI

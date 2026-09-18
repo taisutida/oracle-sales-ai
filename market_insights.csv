@@ -1,0 +1,19 @@
+segmento,tipo,titulo,descricao,data,impacto
+Enterprise Cloud & Data,Tendência de Mercado,Migração para Multi-Cloud,Empresas estão distribuindo workloads entre Oracle OCI e AWS para redundância,2024-09-10,Alto
+Enterprise Cloud & Data,Notícia Concorrente,AWS lança novo serviço de Data Analytics,Competição aumenta em serviços de análise de dados,2024-09-12,Alto
+Enterprise Cloud & Data,Oportunidade,Crescimento em demand de IA/ML na cloud,Clientes buscando modelos de IA hospedados em OCI,2024-09-15,Muito Alto
+Financial Services,Regulação,Novas exigências de conformidade PCI-DSS,Financial Services precisam de melhor controle de acesso e auditoria,2024-09-08,Alto
+Financial Services,Tendência de Mercado,Consolidação de ERP financeiro,Empresas estão consolidando sistemas em plataformas unificadas como NetSuite,2024-09-11,Alto
+Financial Services,Notícia Concorrente,SAP anuncia nova versão de FICO,SAP intensifica competição em consolidação financeira,2024-09-13,Médio
+Cloud Infrastructure,Tendência de Mercado,Aumento de gastos em disaster recovery,Eventos climáticos extremos forçam investimento em DR,2024-09-09,Alto
+Cloud Infrastructure,Oportunidade,Demanda por otimização de custos cloud,Clientes querem reduzir gastos sem perder performance,2024-09-14,Muito Alto
+Cloud Infrastructure,Notícia Concorrente,Azure expande datacenter na América Latina,Microsoft aumenta presença regional,2024-09-12,Médio
+Enterprise Software,Tendência de Mercado,Automação RPA em crescimento,Empresas buscam automatizar processos repetitivos,2024-09-10,Alto
+Enterprise Software,Regulação,LGPD - Compliance de dados pessoais,Empresas precisam garantir conformidade com LGPD,2024-09-07,Alto
+Enterprise Software,Oportunidade,Digitalização de SMBs acelerada,Crescimento de mercado para soluções acessíveis em cloud,2024-09-15,Muito Alto
+Cloud Services,Tendência de Mercado,Adoção de Kubernetes acelerada,Empresas adotam containerização para maior flexibilidade,2024-09-11,Alto
+Cloud Services,Oportunidade,Consultoria em Cloud Migration,Demanda por serviços de migração e modernização,2024-09-14,Muito Alto
+Cloud Services,Notícia Concorrente,Google Cloud aumenta investimento em IA,Google Cloud oferece modelos IA mais acessíveis,2024-09-13,Médio
+Consulting & Services,Tendência de Mercado,Transformação Digital acelerada pós-pandemia,Empresas continuam investindo em modernização,2024-09-09,Alto
+Consulting & Services,Oportunidade,Demanda por especialistas em cloud,Falta de talent em cloud engineers no mercado,2024-09-14,Muito Alto
+Consulting & Services,Notícia de Mercado,Índice de investimento em tech cresce 25% YoY,Gasto em tecnologia continua em alta,2024-09-15,Médio

@@ -1,0 +1,11 @@
+id,cliente_id,cliente_nome,produto_principal,valor_proposta_usd,etapa_funil,data_abertura,data_atualizacao,tempo_ciclo_dias,probabilidade_fechamento,data_fechamento_esperada
+V001,C001,TechFlow Solutions,Oracle OCI Migration,650000,Proposta,2024-08-01,2024-09-15,45,75%,2024-10-15
+V002,C001,TechFlow Solutions,Oracle Database Optimization,280000,Negociação,2024-07-15,2024-09-16,30,85%,2024-10-01
+V003,C002,Global Finance Systems,Oracle NetSuite Implementation,920000,Demonstração,2024-08-10,2024-09-14,60,60%,2024-11-15
+V004,C003,DataHub Innovations,Oracle OCI Advanced Services,450000,Qualificação,2024-09-01,2024-09-16,15,45%,2024-09-30
+V005,C003,DataHub Innovations,Autonomous Database Premium,380000,Proposta,2024-08-20,2024-09-15,25,70%,2024-10-20
+V006,C004,Enterprise Solutions Corp,Oracle NetSuite Customization,290000,Negociação,2024-07-28,2024-09-13,40,80%,2024-10-05
+V007,C005,Cloud Architects LLC,OCI Disaster Recovery Setup,320000,Demonstração,2024-08-15,2024-09-16,35,65%,2024-10-25
+V008,C006,Digital Transformation Inc,Database Performance Tuning,125000,Qualificação,2024-09-05,2024-09-16,10,50%,2024-09-25
+V009,C001,TechFlow Solutions,Oracle Forms Support Package,95000,Assinatura de Contrato,2024-08-15,2024-09-16,32,95%,2024-09-20
+V010,C002,Global Finance Systems,Oracle Database Support Premium,150000,Proposta,2024-09-10,2024-09-16,20,75%,2024-10-10
