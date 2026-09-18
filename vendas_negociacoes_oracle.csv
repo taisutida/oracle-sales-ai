@@ -1,0 +1,9 @@
+id,cliente_id,cliente_nome,produto_principal,valor_proposta_usd,etapa_funil,data_abertura,data_atualizacao,historico_compras,tempo_ciclo_dias,probabilidade_fechamento
+V001,C001,TechFlow Solutions,Oracle OCI Migration,650000,Proposição,2024-08-01,2024-09-15,"Oracle Database (2022 - $180k), Oracle Forms Support (2023 - $45k)",45,75%
+V002,C001,TechFlow Solutions,Oracle Database Optimization,280000,Negociação,2024-07-15,2024-09-16,"Oracle Database (2022 - $180k)",30,85%
+V003,C002,Global Finance Systems,Oracle NetSuite Implementation,920000,Demonstração,2024-08-10,2024-09-14,"Oracle NetSuite License (2021 - $120k), Upgrade (2023 - $95k)",60,60%
+V004,C003,DataHub Innovations,Oracle OCI Advanced Services,450000,Qualificação,2024-09-01,2024-09-16,"Oracle OCI Starter Plan (2023 - $200k)",15,45%
+V005,C003,DataHub Innovations,Autonomous Database Premium,380000,Proposição,2024-08-20,2024-09-15,"Oracle Autonomous DB Standard (2023 - $150k)",25,70%
+V006,C004,Enterprise Solutions Corp,Oracle NetSuite Customization,290000,Negociação,2024-07-28,2024-09-13,"Oracle NetSuite Base License (2020 - $110k), Support (annual)",40,80%
+V007,C005,Cloud Architects LLC,OCI Disaster Recovery Setup,320000,Demonstração,2024-08-15,2024-09-16,"Oracle OCI Infrastructure (2023 - $280k)",35,65%
+V008,C006,Digital Transformation Inc,Database Performance Tuning,125000,Qualificação,2024-09-05,2024-09-16,"Oracle Database Support (ongoing)",10,50%
