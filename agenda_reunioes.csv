@@ -1,0 +1,21 @@
+id,data,hora_inicio,hora_fim,cliente_id,cliente_nome,vendedor,tipo_reuniao,duracao_minutos,status,produto_foco,observacoes
+R001,2026-09-22,10:00,11:00,C001,TechFlow Solutions,João Silva,Discovery,60,Confirmada,OCI Migration,Follow-up da proposta anterior
+R002,2026-09-25,14:00,15:00,C002,Global Finance Systems,João Silva,Demonstração,60,Confirmada,NetSuite Implementation,Apresentação técnica da solução
+R003,2026-09-28,09:00,10:00,C003,DataHub Innovations,João Silva,Follow-up,30,Agendada,OCI Migration,Esclarecer dúvidas do cliente
+R004,2026-10-01,11:00,12:00,C001,TechFlow Solutions,João Silva,Negociação,60,Agendada,OCI Migration,Definir termos comerciais
+R005,2026-10-05,15:00,16:00,C004,Enterprise Solutions Corp,João Silva,Proposição,45,Pendente,NetSuite Customization,Revisão da proposta com cliente
+R006,2026-10-10,10:00,11:00,C002,Global Finance Systems,João Silva,Demonstração,60,Confirmada,Database Support,Treinamento técnico
+R007,2026-10-15,14:00,15:00,C005,Cloud Architects LLC,João Silva,Discovery,60,Agendada,OCI Disaster Recovery,Avaliação da arquitetura
+R008,2026-10-20,09:00,10:00,C003,DataHub Innovations,João Silva,Apresentação Técnica,90,Confirmada,OCI Advanced Services,Discussão de roadmap
+R009,2026-10-25,11:00,12:00,C006,Digital Transformation Inc,João Silva,Negociação,60,Agendada,Database Optimization,Ajustes finais
+R010,2026-11-01,10:00,11:00,C001,TechFlow Solutions,João Silva,Business Review,45,Confirmada,Forms Support,Revisão anual de contrato
+R011,2026-11-05,14:00,15:00,C004,Enterprise Solutions Corp,João Silva,Proposição,45,Pendente,Database Support Premium,Alinhamento de escopo
+R012,2026-11-10,09:00,10:00,C002,Global Finance Systems,João Silva,Assinatura,30,Agendada,OCI Migration,Assinatura do contrato de renovação
+R013,2026-11-15,11:00,12:00,C005,Cloud Architects LLC,João Silva,Follow-up,30,Pendente,Disaster Recovery,Feedback pós-implementação
+R014,2026-11-20,15:00,16:00,C003,DataHub Innovations,João Silva,Demonstração,60,Confirmada,Advanced Services,Demo da nova versão
+R015,2026-11-25,10:00,11:00,C006,Digital Transformation Inc,João Silva,Negociação,60,Agendada,Performance Tuning,Finalizações da negociação
+R016,2026-12-01,14:00,15:00,C001,TechFlow Solutions,João Silva,Renovação de Contrato,60,Pendente,OCI Migration Renewal,Renovação do contrato de OCI
+R017,2026-12-05,09:00,10:00,C002,Global Finance Systems,João Silva,Kick-off,90,Planejado,NetSuite Implementation,Kickoff do novo projeto
+R018,2026-12-10,11:00,12:00,C004,Enterprise Solutions Corp,João Silva,Negociação,60,Agendada,NetSuite Customization,Negociação de escopo
+R019,2026-12-15,10:00,11:00,C005,Cloud Architects LLC,João Silva,Demonstração,60,Confirmada,OCI Disaster Recovery,Apresentação de arquitetura
+R020,2026-12-20,14:00,15:00,C003,DataHub Innovations,João Silva,Business Review,45,Agendada,Advanced Services,Revisão de performance
