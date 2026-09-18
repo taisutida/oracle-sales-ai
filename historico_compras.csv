@@ -1,0 +1,18 @@
+cliente_id,cliente_nome,data_contrato,produto,valor_usd,duracao_meses,status_contrato,data_renovacao_proxima
+C001,TechFlow Solutions,2021-03-15,Oracle OCI Migration,650000,36,Expirado,2024-03-15
+C001,TechFlow Solutions,2022-06-10,Oracle Database Optimization,280000,24,Expirado,2024-06-10
+C001,TechFlow Solutions,2023-09-20,Oracle Forms Support,95000,12,Ativo,2026-09-20
+C002,Global Finance Systems,2020-11-05,Oracle NetSuite Implementation,920000,48,Ativo,2028-11-05
+C002,Global Finance Systems,2023-01-15,Oracle Database Support Premium,150000,12,Expirado,2025-01-15
+C002,Global Finance Systems,2024-05-10,Oracle NetSuite Implementation Advanced,450000,36,Ativo,2027-05-10
+C003,DataHub Innovations,2022-08-20,Oracle OCI Advanced Services,450000,24,Ativo,2026-08-20
+C003,DataHub Innovations,2024-01-10,Autonomous Database Premium,380000,36,Ativo,2027-01-10
+C004,Enterprise Solutions Corp,2021-07-15,Oracle NetSuite Customization,290000,24,Ativo,2027-07-15
+C004,Enterprise Solutions Corp,2023-03-20,Oracle Forms Support Package,125000,12,Expirado,2024-03-20
+C005,Cloud Architects LLC,2023-02-10,OCI Disaster Recovery Setup,320000,24,Ativo,2027-02-10
+C005,Cloud Architects LLC,2024-10-15,Oracle Database Performance Tuning,200000,12,Ativo,2025-10-15
+C006,Digital Transformation Inc,2021-12-01,Database Performance Tuning,125000,24,Expirado,2023-12-01
+C006,Digital Transformation Inc,2023-11-15,OCI Migration Services,180000,24,Ativo,2027-11-15
+C001,TechFlow Solutions,2025-02-20,OCI Migration Renewal,550000,36,Ativo,2028-02-20
+C002,Global Finance Systems,2025-06-10,NetSuite Support Extension,200000,12,Ativo,2026-06-10
+C004,Enterprise Solutions Corp,2025-04-15,NetSuite Customization Renewal,180000,24,Ativo,2027-04-15
